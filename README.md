@@ -1,10 +1,8 @@
 ## Welcome to basic kubernetes repo.
 
-# You can find basic yaml files related to resouces of kubernetes.
-
-# One can clone this repo and run on their own kubernetes cluster.
-
-# Hope you find this repo useful in your initial learning phase of K8s.
+You can find basic yaml files related to resouces of kubernetes.
+One can clone this repo and run on their own kubernetes cluster.
+Hope you find this repo useful in your initial learning phase of K8s.
 
 ## BASICS:-
 
@@ -12,21 +10,21 @@ Kubernetes - "an open-source system for automating deployment, scaling, and mana
 
 A Kubernetes cluster is made of a master node and a set of worker nodes. The cluster is all driven via API calls to controllers, both interior as well as exterior traffic.
 
-Kubernetes has the following main components:
+# Kubernetes has the following main components:
 
-Master and worker nodes
+* Master and worker nodes
 
-Controllers
+* Controllers
 
-Services
+* Services
 
-Pods of containers
+* Pods of containers
 
-Namespaces and quotas
+* Namespaces and quotas
 
-Network and policies
+* Network and policies
 
-Storage
+* Storage
 
 1. Master Node
 
