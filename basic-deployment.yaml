@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  labels:
+    tier: frontend
+spec:
+  template:
+    metadata:
+      name: nginx-container
+      labels:
+        app: webapp
+        type: frontend
+    spec:
+      containers:
+      - name: new
+        image: nginx
+        ports:
+        - containerPort: 8080
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webapp
+      type: frontend
+      
+# kubectl create -f basic-deployment.yaml
+# kubectl expose deployment basic-deployment - It will create a clusterIP service 

@@ -11,3 +11,7 @@ spec:
     image: nginx
     ports:
     - containerPort: 8080
+    
+# kubectl create -f basic_pod.yaml
+# kubectl get pods
+# kubectl expose pod basic-pod --target-port=8080
