@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-access-service
+spec:
+  selector:
+    app: myapp
+  type: NodePort
+  ports:
+  - targetPort: 80
+    port: 80
+    nodePort: 30008    # not mandatory to give it will autoassign availaible port from 30000-32767
+
+
+
+# kubectl create -f nodeport-service.yaml
+# target port is on pod
+# port is on service
+# nodeport is on node(VM)
+# curl http://<VM-address>:30008

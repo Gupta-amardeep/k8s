@@ -1,0 +1,18 @@
+apiVersiom: v1
+kind: service
+metadata:
+  name: internal-service
+spec:
+  selector:
+    tier: frontend
+  type: ClusterIP
+  ports:
+  - name: pod-service
+    port: 80
+    targetPort: 80
+    protocol: TCP
+
+# kubectl create -f cluster-service.yaml
+# kubectl expose pod basic-pod - Using this it will create only ClusterIP service(Default)
+# target port is on pod
+# port is on service
