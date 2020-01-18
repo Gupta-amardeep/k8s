@@ -13,6 +13,7 @@ spec:
 
 
 
+
 # kubectl create -f nodeport-service.yaml
 # target port is on pod
 # port is on service

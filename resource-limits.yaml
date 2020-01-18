@@ -1,0 +1,20 @@
+# We have to tell kubernetes abt the resources our application requires so that kubernetes will optimally package it
+# Resource request - Min amt of resource required to run the application
+# Resource limits - Maxm amt of resource that an application can consume.
+# Note - It is defined per container not pod
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kuard
+spec:
+  containers:
+  - name: kuard
+    image: nginx
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "128Mi"
+      limits:
+        cpu: "1000m"
+        memory: "256Mi"

@@ -1,0 +1,20 @@
+# Liveniness probe are defined per container to check if application is healthy and wont be restart .
+
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: kuard
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    livenessProbe:
+      httpGet:
+        path: /index
+        port: 8080
+      initialDelaySeconds: 5
+      timeoutSeconds: 1
+      periodSeconds: 10
+      failureThreshold: 3
+    ports:
+    - containerPort: 8080

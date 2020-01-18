@@ -12,6 +12,20 @@ spec:
     ports:
     - containerPort: 8080
     
+# kubectl run basic-pod --image=nginx
+# kubectl run basic-pod --image=nginx --generator=run-pod/v1 (OR)
+# kubectl run basic-pod --image=nginx --dry-run (It will show you if this pod can be run)
+# kubectl run basic-pod --image=nginx --dry-run -o yaml (It will show yaml of that file)
+# kubectl run basic-pod --image=nginx --dry-run -o yaml > mypod.yaml (It will save pod manifest in yaml file)
 # kubectl create -f basic_pod.yaml
 # kubectl get pods
+# kubectl describe pod basic-pod
 # kubectl expose pod basic-pod --target-port=8080
+# kubectl expose pod basic-pod --port=80 --target-port=8080 (If container port is not given in yaml)
+# kubectl delete pod basic-pod
+# kubectl delete -f basic_pod.yaml
+
+# kubectl exec basic-pod -it bash
+# kubectl logs basic-pod ( -f to stream logs and --previous flag to see previous container logs)
+
+# kubectl exec basic-pod -it bash (start interactive terminal in container)
