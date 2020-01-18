@@ -1,3 +1,5 @@
+# Deployment helps to manage release of new versions
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,3 +27,16 @@ spec:
       
 # kubectl create -f basic-deployment.yaml
 # kubectl expose deployment basic-deployment - It will create a clusterIP service 
+
+# kubectl run ng --image=nginx -l version=v1,tier=frontend (creates deployment with label)
+# kubectl run ngx --image=nginx -l version=v1,tier=frontend --replicas=2 (creates deployment with label as well as replicas)
+
+# kubectl scale deploy <name> --replicas=5
+
+# kubectl set image deployment ng nginx=nginx:1.17.7 --record
+# kubectl rollout status deployment ng
+# kubectl rollout hsitory deployment ng (history of past versions)
+# kubectl rollout pause deployment ng
+# kubectl rollout resume deployment ng
+# kubectl rollout undo deployment ng (rolling backing to previous version)
+# kubectl rollout undo deployment ng --to-revision=3

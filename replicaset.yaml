@@ -1,0 +1,30 @@
+# Replicaser acts as a cluster-wide po manager ensuring the right type and no of pods are running all times.
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replicasets
+spec:
+  template:
+    metadata:
+      name: replicapod
+      labels:
+        tier: frontend
+        version: v1
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+  replicas: 8
+  selector:
+    matchLabels:
+      tier: frontend
+      version: v1
+
+
+# kubectl create -f replicaset.yaml
+# kubectl replace -f replicaset.yaml (If you changed the replicas in yaml file)
+# kubectl scale --replicas=10 -f replicaset.yaml (Want to scale using same file)
+# kubectl scale replicaset <name> --replicas=10 (explicitly scale)
+# kubectl describe rs <name>
+# kubectl get pods -l tier=frontend, version=v1 (finding pod using labels)

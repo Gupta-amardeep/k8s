@@ -1,0 +1,11 @@
+# Selectors and labels
+
+# kubectl run mypod --image=nginx --replicas=3 -l version=v1,env=prd
+
+# kubectl label pods <name> owner=michael
+# kubectl label deployments <name> owner- (remove owner label)
+
+# kubectl get pods --show-labels
+# kubectl get pods --selector version=v1,env=prd
+# kubectl get pods -l env=development
+# kubectl get pods -l 'env in (production, development)'
