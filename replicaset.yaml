@@ -1,4 +1,4 @@
-# Replicaser acts as a cluster-wide po manager ensuring the right type and no of pods are running all times.
+# Replicaser acts as a cluster-wide pod manager ensuring the right type and no of pods are running all times.
 
 apiVersion: apps/v1
 kind: ReplicaSet
