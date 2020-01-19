@@ -1,4 +1,17 @@
 apiVersion: v1
-kind: Volume
+kind: Pod
 metadata:
+  name: one2kaone
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:       # created volume is mounted to /data inside the container
+    - mountPath: /opt
+      name: data-volume
+  volumes:
+  - name: data-volume
+    hostPath:            # this path refers to our machine where we want to persist data
+      path: /data
+      type: Directory
 
