@@ -1,0 +1,23 @@
+# kubectl label nodes <node-name> proper:match
+# kubecl get nodes --show-labels 
+# kubecl get nodes -l ssd=true
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-selector
+spec:
+  selector:
+    matchLabels:
+      ssd: true
+  template:
+    metadata:
+      name: ssd-pods
+      labels:
+        ssd: true
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+      nodeSelector:
+        ssd: true
