@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: dev
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+  nodeSelector:
+    size: large
+
+
+# You can constrain a Pod to only be able to run on particular Node(s) , or to prefer to run on particular nodes. There are several ways to do this, and the recommended approaches all use label selectors to make the selection.
+# kubectl label nodes <node-name> <label-key>=<value>
+# kubectl label nodes node01 size=large
+# kubectl get nodes --show-labels
+# kubectl describe node "nodename"
