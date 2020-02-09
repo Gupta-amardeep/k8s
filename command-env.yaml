@@ -1,0 +1,52 @@
+# When you create a Pod, you can define a command and arguments for the containers that run in the Pod. To define a command, include the command field in the configuration file. To define arguments for the command, include the args field in the configuration file. The command and arguments that you define cannot be changed after the Pod is created.
+
+# The command and arguments that you define in the configuration file override the default command and arguments provided by the container image. If you define args, but do not define a command, the default command is used with your new arguments.
+
+# In Docker:-
+
+# FROM Ubuntu
+# ENTRYPOINT["sleep"]
+# CMD["5"]
+
+# Here ENTRYPOINT = command (in k8s) and CMD = args (in K8s)
+
+# If you do not supply command or args for a Container, the defaults defined in the Docker image are used.
+
+# If you supply a command but no args for a Container, only the supplied command is used. The default EntryPoint and the default Cmd defined in the Docker image are ignored.
+
+# If you supply only args for a Container, the default Entrypoint defined in the Docker image is run with the args that you supplied.
+
+# If you supply a command and args, the default Entrypoint and the default Cmd defined in the Docker image are ignored. Your command is run with your args.
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: command-demo
+spec:
+  containers:
+  - name: demo-debian
+    image: demo-debian
+    command: ["printenv"]
+    args: ["HOSTNAME", "KUBERNETES_PORT"]
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: command-demo1
+spec:
+  containers:
+  - name: demo-debian
+    image: demo-debian
+    env:
+    - name: MESSAGE
+      value: "hello world"
+    command: ["/bin/echo"]
+    args: ["$(MESSAGE)"]
+
+# kubectl apply -f <filename>
+# kubectl get pods
+# kubectl describe pod command-demo
+# kubectl logs command-demo

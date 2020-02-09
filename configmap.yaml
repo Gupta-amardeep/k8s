@@ -1,0 +1,43 @@
+# ConfigMaps allow you to decouple configuration artifacts from image content to keep containerized applications portable.
+
+# kubectl create configmap <map-name> <data-source>
+
+# where <map-name> is the name you want to assign to the ConfigMap and <data-source> is the directory, file, or literal value to draw the data from.
+
+
+# IMPERATIVE WAY:
+# kubectl create configmap special-config --from-literal=special.how=very --from-literal=special.type=charm
+
+# kubectl get configmaps special-config -o yaml
+
+DECLARATIVE WAY:
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: special-config
+  namespace: default
+data:
+  SPECIAL_LEVEL: very
+  SPECIAL_TYPE: charm
+
+--- 
+
+# Now using this configmap in pod manifest as envFrom:-
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dapi-test-pod
+spec:
+  containers:
+    - name: test-container
+      image: k8s.gcr.io/busybox
+      command: [ "/bin/sh", "-c", "env" ]
+      envFrom:
+      - configMapRef:
+          name: special-config
+
+
+# kubectl create -f <filename.yaml>
+# kubectll get configmaps
