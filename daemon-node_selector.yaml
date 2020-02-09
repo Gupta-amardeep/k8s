@@ -1,6 +1,8 @@
 # kubectl label nodes <node-name> proper:match
 # kubecl get nodes --show-labels 
 # kubecl get nodes -l ssd=true
+# kubectl get DaemonSet
+# kubectl describe DaemonSet <name>
 
 apiVersion: apps/v1
 kind: DaemonSet
