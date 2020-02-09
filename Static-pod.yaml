@@ -1,0 +1,8 @@
+# If there is no master node to create new pods.
+# Go to worker node pathand place yaml file there.
+# We can do this only for pod but not for replicaset,deployment, service, namespace.
+
+# Path to place yaml file:- /etc/kubernetes/manifests
+# or check kubelet.service file --pod-manifest-path=/etc/kubernetes/manifests
+
+# It will automatically create a pod. You can see using kubectl get pods
