@@ -1,0 +1,57 @@
+## Cluster maintenance
+
+Note:- Cloud provider will itself upgrade the OS, K8s version for its K8s service
+
+1. Operating system upgrade:-
+
+-> kubectl drain node01 (It will terminate the node and mark it as unschedulable but pods that are not in replicaset 
+get evicted and pods related to replicaset will itself create replication other node)
+
+Note:- It you stop the node without draining it, the pods that are in replicaset will itself create
+       but the non-replicaset will get evicted from it. There is parameter --pod-eviction-timeout=5min
+       that will try to restart the pods on it if node is coming back in 5 min otherwise it will mark the
+       node as dead.
+
+-> Kubectl uncordon node01 (Once the node is back we will make the node uncordon that is again schedulable for
+    pods but remember no pod will comeback again we have to schedule it )
+
+-> kubectl cordon node02 (It will make node unschedulable for new pods but does not terminate it or remove the
+    pods which are running on it)
+
+
+Note:- kubectl drain node01 --ignore-daemonsets (for pods scheduled as daemonsets u have to do it)
+       kubectl drain node02 --force (If pod is not part of replicaset it will permanently remove it)
+
+
+## K8s release version - Major.Minor.Patch = v1.16.0
+The new  version will all control plane components like api-server, controller-manger, scheduler, kubelet, proxy
+kubectl apart from etcd and coredns that does not follow this.
+Note:- the other components should never be of higher version than kubeapi-server. Also the controller and scheduler
+    can be on X,X-1, kubelet & kube-proxy on X,X-1,X-2 AND KUBECTL CAN BE x-1,x,x+1
+
+NOTE:- Always upgrade minor version one by one. We cannot jump to 1.16 from 1.13 instead first 1.14,1.15 than 1.16
+
+1.  Upgrade the master node (api,controller,scheduler go down that does not mean your pod wont run. just  u wont 
+    able to schedule new pods also u wont be able to use kubectl utility as well)
+2. Upgrade the worker nodes (Three strategies are there 
+                            a. All nodes down - no appln is availaible to serve user
+                            b. One node at a time - (ideal for Replicaset)
+                            c. Add new node to cluster with new version and than perform upgrade one at a time)
+
+
+Kubeadm upgrade plan:-
+1. kubeadm upgrade plan (It will show u kubeadm version, cluster version and all componets version, latest
+                        stable version availaible and at wht version we have to manually upgrade kubelet)
+##Master
+a. apt-get upgrade -y kubeadm=1.12.0-00 --allow-unauthenticated (upgrade kubeadm)
+b. kubectl drain master --ignore-daemonsets
+b. kubeadm upgrade apply v.1.12.0  (cluster component upgrade)
+c. kubectl get nodes (you will still see older version as it is showing version of kubelet)
+d. apt-get upgrade -y kubelet=1.12.0-00 --allow-unauthenticated
+e. systemctl restart kubelet
+
+##worker
+a. kubectl drain node01
+b. pt-get upgrade -y kubeadm=1.12.0-00 --allow-unauthenticated
+c. apt-get upgrade -y kubelet=1.12.0-00 --allow-unauthenticated
+d. systemctl restart kubelet
