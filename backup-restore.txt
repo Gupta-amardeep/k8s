@@ -1,0 +1,48 @@
+## Back Up, Restore and Migrate Kubernetes with Velero
+Originally developed by Heptio and known as Ark, Velero is supported by Dell’s PowerProtect, allowing PowerProtect 
+users to back up their Kubernetes clusters.
+Velero is a command-line tool that backs up clusters and restores them in case of loss, migrates cluster resources
+to other clusters, and replicates a production cluster to development and testing clusters.
+
+1. Backing up of Resource configuration
+2. ETCD cluster
+3. Persistent volumes
+
+
+1. kubectl get all --all-namespcaes -o yaml > backup.yaml
+
+2. While backing ETCD cluster you can check the volume mount point for its certs /etc/kubernetes/pki/etcd
+    as well as data /etc/kubernetes/pki/etcd under its pod definition file.
+    --data-dir=/var/lib/etcd
+
+    OR
+
+    We have inbuilt restore taking mechanism via ETCDCTL_API=3
+    -> ETCDCTL_API=3 etcdctl snapshot save snapshotdb  -- Taking snapshot
+    -> ETCDCTL_API=3 etcdctl snapshot status snapshotdb  -- see status
+
+Restore==
+    ETCDCTL_API=3 etcdctl snapshot restore snapshot.db \
+  --name m1 \
+  --initial-cluster m1=http://host1:2380,m2=http://host2:2380,m3=http://host3:2380 \
+  --initial-cluster-token etcd-cluster-1 \
+  --initial-advertise-peer-urls http://host1:2380
+
+  Next, start etcd with the new data directories
+
+  etcd \
+  --name m1 \
+  --listen-client-urls http://host1:2379 \
+  --advertise-client-urls http://host1:2379 \
+  --listen-peer-urls http://host1:2380 &
+
+
+--> etcd --version, kubectl logs etcd-master -n kube-system 
+
+
+Ques. The master nodes in our cluster are planned for a regular maintenance reboot tonight. While we do not 
+anticipate anything to go wrong, we are required to take the necessary backups. Take a snapshot of the ETCD
+database using the built-in snapshot functionality.
+Store the backup file at location /tmp/snapshot-pre-boot.db
+
+Ans. https://github.com/mmumshad/kubernetes-the-hard-way/blob/master/practice-questions-answers/cluster-maintenance/backup-etcd/etcd-backup-and-restore.md
