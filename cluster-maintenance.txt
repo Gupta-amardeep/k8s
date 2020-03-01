@@ -43,15 +43,17 @@ Kubeadm upgrade plan:-
 1. kubeadm upgrade plan (It will show u kubeadm version, cluster version and all componets version, latest
                         stable version availaible and at wht version we have to manually upgrade kubelet)
 ##Master
-a. apt-get upgrade -y kubeadm=1.12.0-00 --allow-unauthenticated (upgrade kubeadm)
+a. apt-get upgrade -y kubeadm=1.17.0-00 --allow-unauthenticated (upgrade kubeadm)
 b. kubectl drain master --ignore-daemonsets
-b. kubeadm upgrade apply v.1.12.0  (cluster component upgrade)
+b. kubeadm upgrade apply v1.17.0  (cluster component upgrade)
 c. kubectl get nodes (you will still see older version as it is showing version of kubelet)
-d. apt-get upgrade -y kubelet=1.12.0-00 --allow-unauthenticated
+d. apt-get upgrade -y kubelet=1.17.0-00 --allow-unauthenticated
 e. systemctl restart kubelet
+f. kubectl uncordon master
 
 ##worker
 a. kubectl drain node01
 b. pt-get upgrade -y kubeadm=1.12.0-00 --allow-unauthenticated
 c. apt-get upgrade -y kubelet=1.12.0-00 --allow-unauthenticated
 d. systemctl restart kubelet
+e. kubectl uncordon node01
