@@ -1,0 +1,36 @@
+In K8s cluster we have master and worker nodes. They continously communicate with each other so thier must be 
+secure TLS communication bw them. For client also like admin to access api-server we need TLS cert
+
+-> Server cert for servers
+1. kube api-server - It exposes a HTTP endpoint from where all comm takes place with api-server(api-server.crt, api-server.key)
+2. ETCD server - (etcdserver.crt, etcdserver.key)
+3. Kubelet server - (kubelet.crt, kubelet.key)
+
+-> Client cert for clients
+1. kube-apiserver is talked -   a)Admin (admin.crt, admin.key)
+                                b)kube-scheduler (scheduler.crt, scheduler.key)
+                                c)kube-controller-manager (controller-manager.crt, controller-manager.key)
+                                d)kube-proxy (kube-proxy.crt, kube-proxy.key)
+
+2. ETCD server is talked by-    a)kube-apiserver(apiserver-etcd-client.crt, apiserver-etcd-client.crt.key )
+
+3. Kubelet server is talked by- a)kube-apiserver(apiserver-kubelet-client.crt, apiserver-kubelet-client.key)
+
+4. Kubelet client - a)(kubelet-client.crt, kubelet-client.key)
+
+## One CA to signed all client cert ans server cert apart from ETCD server
+## One CA to signed ETCD server and api-etcd-client server
+
+Note:- Here we use OPENSSL to create and sign cert
+
+1. Generating CA - ca.crt and ca.key (As this is CA cert we self signed it by the key we generate in 1st step)
+a. Generate keys - openssl genrsa -out ca.key 2048
+b. Cert signing request - openssl req -new -key ca.key -subj "/CN=KUBERNETES-CA" -out ca.csr
+c. Sign certificates - openssl x509 -req -in ca.csr -signkey ca.key -out ca.crt 
+
+2. Admin user - admin.key and admin.csr
+a. Generate keys - openssl genrsa -out admin.key 2048
+b. CSR - openssl req -new -key ca.key -subj "/CN=kube-admin/O=system:masters" -out admin.csr
+c. Sign it - openssl x509 -req -in admin.csr -CA ca.crt -CAkey ca.key -out admin.crt
+
+3. Same we can do for scheduler as well as controller and kube-proxy for client cert.
