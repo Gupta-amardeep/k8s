@@ -39,4 +39,8 @@ Ans. fix the --cert-file to use correct server.crt
 Ans. Run docker ps -a command to identify the kube-api server container. Run docker logs container-id command to view the logs.
 ETCD has its own CA. The right CA must be used for the ETCD-CA file in /etc/kubernetes/manifests/kube-apiserver.yaml
 
-13. 
+13. The kube-api server stops responding one day when it tries to connect to ETCD server.
+Inspect and fix the issue. If the certificate is expired, sign a new certificate by the CA and configure it to be used by the kube-api server
+Ans. Renew apiserver-etcd-client.crt Note that it is signed by /etc/kubernetes/pki/etcd/ca.crt that is the ca
+cert of etcd.
+openssl x509 -req -in apiserver-etcd-client.csr -CA /etc/kubernetes/pki/etcd/ca.crt -CAkey /etc/kubernetes/pki/etcd/ca.key -out apiserver-etcd-client.crt
