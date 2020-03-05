@@ -1,0 +1,29 @@
+# A good method to raise signing request for client cert so that whenever new team member joins Kubectl can list and approve it.
+
+1. user create csr object
+openssl genrsa -out name.key 2048
+openssl req -new -key name.key -subj "/CN=name" -out name.csr
+
+2. sent it to the admin. Admin than generate yaml using that csr by encoding it in base64
+
+apiVersion: certificates.k8s.io/v1beta1
+kind: CertificateSigningRequest
+metadata:
+  name: akshay
+spec:
+  groups:
+  - system:authenticated
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZqQ0NBVDRDQVFBd0VURVBNQTBHQTFVRUF3d0dZV3R6YUdGNU1JSUJJakFOQmdrcWhraUc5dzBCQVFFRgpBQU9DQVE4QU1JSUJDZ0tDQVFFQXhTUmtISlVTSnZCS0U3NXI3cGQ2eWFoYVFKRGNOenpIVXhBSEFDUGlWeC9CCisrRnpHTXEzaHR1SFZVL1ZEc2sxSGovdWo2aGtJRUFad3hQeEdFb2N2UWUxalFjL2IwMys4S3hoTTVIYnlhUEkKZS9ubk96VWE2YVhtOUtkTGNnUzh1a21jSjU5dCt0TFpqeSsvaDd0aEgzMEpJa2k3SVdXbkdGSjUrbDF5aXExYgp2MGNWbWtxaG5wNVJLZTBwOXZUem1jN25QTzdpYkpORE9jY0JqTDl0Y2pmVjludENRTC9ZNCtVcXFIVUhqc1lwCjNhemN3S0t5VmpkeXp2bWtxalF2ZTBSVUdnOHRZVjR4TFdsSXlJcElLVW1rVG85Ky94NnlES0RyNkFLZ3padWgKdDZjMnZ6a24zZkhDM2hwQlNmWi9PUEEzUlUrL1ZUM21FYW56ZElnKzN3SURBUUFCb0FBd0RRWUpLb1pJaHZjTgpBUUVMQlFBRGdnRUJBQzFjQjNkYmJvVllyQUtjVkxzZm1xWjRDTDV2ZGdldmswMGs2VE5Cc3pZZENaVFNUbXZHCmtURU1OZXVXYmR5OXJYeUFxSlhMdjljODlwTkl2TnM2RG9WR2wyeG5IcGgreHRocks0ZzZaNEgyd2ZrY21tYksKN09RVUNQMDlobXlaL05BS1ovb05ab1J4ZjVVeEdaTitwTVl3T3BTeElQR0E1NURBNzJiamIza1VOdDcyazRvUQp3MERuUXluV1VwamRZSmZiTTZLYitJekJkSkJ1REJnQkZuaTdEdjYzOWIrU3ZoV2Q4UmxRN1dpSE9MNFA3Nm1kCmozZElwQ3gxdWpqaTdBQkdKc0ZhOVBwRGQyWFhMUFNFK1ZWS2svbURwdkg0UUJpd3hOV1dYRFRVcTdmTzIvNDUKdjR6dkhlL2RTR3FVSDhUU05SWkRBOGtVMHYrSytmcklyQzQ9Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+  usages:
+  - digital signature
+  - key encipherment
+  - server auth
+
+3. kubectl get csr
+
+4. kubectl certificate approve name
+
+(API server than sign it using CA key and cert)
+
+5. Admin can than share the cert with name user
+kubectl get csr name -o yaml (decode that cert to basic non 64) and share with userSS
