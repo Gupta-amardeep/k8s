@@ -1,0 +1,94 @@
+Role-based access control (RBAC) is a method of regulating access to computer or network resources based on 
+the roles of individual users within an enterprise.
+
+RBAC uses the rbac.authorization.k8s.io API Group to drive authorization decisions, allowing admins to 
+dynamically configure policies through the Kubernetes API.
+
+#### kubectl get roles
+#### kubectl get rolebindings
+#### kubectl describe role <role-name>
+
+## Check Access
+kubectl auth can-i create deployments
+kubectl auth can-i delete nodes
+
+## Admin can also personate for other users
+kubectl auth can-i create deployments --as dev-user
+kubectl auth can-i create pods --as dev-user
+
+## To see wht all reources are namespaced 
+kubectl api-resources --namespaced=true
+kubectl api-resources --namespaced=false
+
+
+## Role and ClusterRole
+
+1. A Role can only be used to grant access to resources within a single namespace.
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+
+2. A ClusterRole can be used to grant the same permissions as a Role, but because they are cluster-scoped, 
+they can also be used to grant access to:
+a. cluster-scoped resources (like nodes)
+b. non-resource endpoints (like “/healthz”)
+c. namespaced resources (like pods) across all namespaces (needed to run kubectl get pods --all-namespaces, for example)
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  # "namespace" omitted since ClusterRoles are not namespaced
+  name: secret-reader
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "watch", "list"]
+
+
+## RoleBinding and ClusterRoleBinding
+
+1. A role binding grants the permissions defined in a role to a user or set of users. It holds a list of subjects (users, groups, or service accounts), and a reference to the role being granted
+A RoleBinding may reference a Role in the same namespace. The following RoleBinding grants the “pod-reader” role to the user “jane” within the “default” namespace. This allows “jane” to read pods in the “default” namespace.
+
+apiVersion: rbac.authorization.k8s.io/v1
+# This role binding allows "jane" to read pods in the "default" namespace.
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: default
+subjects:
+- kind: User
+  name: jane # Name is case sensitive
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role #this must be Role or ClusterRole
+  name: pod-reader # this must match the name of the Role or ClusterRole you wish to bind to
+  apiGroup: rbac.authorization.k8s.io
+
+2. ClusterRoleBinding may be used to grant permission at the cluster level and in all namespaces. The following 
+ClusterRoleBinding allows any user in the group “manager” to read secrets in any namespace.
+
+apiVersion: rbac.authorization.k8s.io/v1
+# This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
+kind: ClusterRoleBinding
+metadata:
+  name: read-secrets-global
+subjects:
+- kind: Group
+  name: manager # Name is case sensitive
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: secret-reader
+  apiGroup: rbac.authorization.k8s.io
+
+
+### Note:-You cannot modify which Role or ClusterRole a binding object refers to. Attempts to change the roleRef field of
+a binding object will result in a validation error. To change the roleRef field on an existing binding object, the binding object must be deleted and recreated
