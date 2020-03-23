@@ -1,0 +1,19 @@
+<<Provate registry in docker>>
+
+-> docker login <server name>
+Enter username and password
+Username:
+Password:
+
+
+#docker run <server-name>/imagepath (we can enter same path in image path of yaml filNe)
+
+Note:- But how kubectl verify the username and password for your private repo while running pods,
+For this we  will create a secret to that all this info
+
+kubectl create secret docker-registry regcrd --docker-server=<>.io --docker-usernem=name --docker-password=pass --docker-email=a@g
+
+We than specify this is yaml file under spec container section:-
+
+imagePullSecrets:
+- name: regcrd
