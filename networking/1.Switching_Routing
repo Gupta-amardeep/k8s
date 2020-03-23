@@ -1,0 +1,19 @@
+Switching:- TO connect system A to B we connect them to switch thats ways switch create nw that connect each other.
+            To connect each other we need interface(eth) on each other.
+            |ip link| command to see interfaces
+            If these are in NW 192.168.1.0 we assign both machines IP address.
+            |ip addr add 192.168.1.10/24 dev eth0| and |ip addr add 192.168.1.11/24 dev eth0|
+
+Note:- Switch only enable communication bw hosts within same NW.
+
+
+## Now suppose we want to communicate systems in other NW 192.168.2.0. Than how system in one system communicate with system in other NW.
+
+Routing:- Thats where router comes in to connect two diff NW's. Its having port connected from both nw and assignes
+            ip as say 192.168.1.1 and 192.168.2.1. we need to configure gateway to comm bw one NW to another.
+            |route| command to see the gateway and destinations.
+            |ip route add 192.168.1.0/24 via 192.168.2.1| (To send packet in 192.168.1.0/24 NW via 192.168.2.1)
+            |ip route add 192.168.2.0/24 via 192.168.1.1|
+            To connect to internet world we use |ip route add default via 192.168.1.2| or in place of default 0.0.0.0
+
+To enable port forwarding we have to set /proc/sys/net/ipv4/ip_forward = 1
