@@ -1,0 +1,17 @@
+# First create a persistent disk on cloud to be use as PV to directly make PVC it will automatically create this for you
+
+# gcloud compute disks create --size=10GB --zone=us-central1-a demo-disk
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pd-volume
+spec:
+  storageClassName: "standard"
+  capacity:
+    storage: 100G
+  accessModes:
+  - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: demo-disk
+    fsType: ext4
