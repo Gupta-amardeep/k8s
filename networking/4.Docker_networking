@@ -1,0 +1,46 @@
+When you run a container it get attached to a network that can be None, host, bridge that can be default or user created.
+
+1. None - It does not attached to any network. Not get any IP address so within the same network or outside no one acan reach it.
+|docker run -dit --network none nginx|
+
+2. Host - It connected to host NW that means no isolation bw host and container. so when u run and app in container
+it get attached to host on same port and you can see same ip address on container as host
+
+3. Bridge - It created a internal private nw which container created under this are assigned to. There is a subnet range
+that these container can get. When u run any container it get attached automatically to default bridge network.So each 
+conatiner will get an diff IP address according to subnet NW defined.
+U can check  - docker inspect <container-name> 
+
+Note:- On host you can see this as docker0 interface created 
+
+Ques:- How docker create network namespace when u create a container and attach it to bridge network.
+Ans:-  It create a virtual interface both on bridge(vetbb1ch@if7 on host) and inside namespace(eth0@1f8 inside namespace)
+       This continues whenever a new container created docker create new namespcae assign a interface to it and one interface 
+       on docker host bridge network and connect both of them
+
+Ques:- Ho can you access the application hosted on container on host system.
+Ans:-  here we use port mapping while running a contianer that send any traffic on host port to relevant port inside
+       the container. This way we can run multiple application running on same host on diff  port mapped via diff 
+       container using bridge network.
+       docker run -dit --name amar -p 8080:80 --network net1 centos
+       iptables -nvL -t nat
+
+
+Docker networking basics:-
+
+docker network ls
+docker network create <name> (By defalut it will create in bridge driver)
+docker network create <name> --driver <host,null,bridge>
+docker network create <name> --driver <name> --subnet 10.167.16.0/24
+docker network inspecct <name>
+
+
+How docker do it internally:-
+1. Create NW namespace for container
+2. Create Bridge NW interface
+3. Create ETh pairs on all containers
+4. Attach them to conatiner/namespace
+5. Attach other eth to bridge
+6. Assign IP address to both container as well as bridge
+7. Bring the intaerface up
+8. Enable NAT-IP translation to enabele comm bw and outside container

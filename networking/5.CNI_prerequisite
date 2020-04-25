@@ -1,0 +1,12 @@
+Container Networking Interface(CNI) - It is a set of standards that define on how programs should be developed to solve
+the network related challanges in a container running environment.
+
+Inbuilt plugin like bridge, vlan, mcvlan, DHCP
+External supported plugin - weave, fannel, calico and cilium
+
+kube-api Server - port 6443
+ETCD - 2379
+kubelet - 10250
+kube-scheduler - 10251
+kube-controller - 10252
+Services - 30000-32767
