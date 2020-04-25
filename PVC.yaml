@@ -1,0 +1,41 @@
+# Most of the time, you don't need to directly configure PV objects or create Compute Engine persistent disks. 
+# Instead, you can create a PVC, and Kubernetes automatically provisions a persistent disk for you.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hello-web-disk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 30Gi
+
+# if you dont specify storageClassName field it will take by deafult as "standard" in GKE.
+
+# kubectl get persistentvolumeclaim
+
+# Mount a PVC to a pod
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: pvc-demo-pod
+spec:
+  containers:
+    - name: frontend
+      image: nginx
+      volumeMounts:
+      - mountPath: "/var/www/html"
+        name: pvc-demo-volume
+  volumes:
+    - name: pvc-demo-volume
+      persistentVolumeClaim:
+        claimName: hello-web-disk
+
+# deploys an nginx container, attaches the pvc-demo-volume to the Pod and mounts that volume to the path /var/www/html 
+# inside the nginx container. Files saved to this directory inside the container will be saved to the persistent 
+# volume and persist even if the Pod and the container are shutdown and recreated.
+
